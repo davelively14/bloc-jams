@@ -28,6 +28,21 @@ var albumMarconi = {
   ]
 };
 
+var albumBall = {
+  title: 'Play Ball',
+  artist: 'Freemans',
+  label: 'Fulton',
+  year: '1996',
+  albumArtUrl: 'assets/images/album_covers/19.png',
+  songs: [
+    { title: 'Beam', duration: '1:01' },
+    { title: 'Avery', duration: '5:01' },
+    { title: 'Justice', duration: '3:21' },
+    { title: 'Smoltz', duration: '3:14' },
+    { title: 'Maddox', duration: '2:15' },
+  ]
+};
+
 var createSongRow = function(songNumber, songName, songLength) {
   var template = `
   <tr class="album-view-song-item">
@@ -60,5 +75,14 @@ var setCurrentAlbum = function(album) {
 };
 
 window.onload = function() {
-  setCurrentAlbum(albumPicasso);
+  var currentView = 0;
+  var albums = [albumPicasso, albumMarconi, albumBall];
+
+  setCurrentAlbum(albums[currentView]);
+
+  document.getElementsByClassName('album-cover-art')[0].addEventListener("click", function(e) {
+    (currentView + 1) < albums.length ? currentView++ : currentView = 0;
+    setCurrentAlbum(albums[currentView]);
+  });
+
 };
