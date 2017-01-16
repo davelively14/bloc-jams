@@ -80,7 +80,7 @@ var getSongItem = function(element) {
     case 'album-song-button':
     case 'ion-play':
     case 'ion-pause':
-      return findParentByClassName(element, 'song-item-number')
+      return findParentByClassName(element, 'song-item-number');
     default:
       return;
   }
