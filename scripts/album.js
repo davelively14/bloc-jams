@@ -72,7 +72,7 @@ var getSongItem = function(element) {
   switch(element.className) {
     case 'song-item-title':
     case 'song-item-duration':
-      return findParentByClassName(element, 'album-view-song-list').querySelector('.song-item-number');
+      return findParentByClassName(element, 'album-view-song-item').querySelector('.song-item-number');
     case 'album-view-song-item':
       return element.querySelector('.song-item-number');
     case 'song-item-number':
