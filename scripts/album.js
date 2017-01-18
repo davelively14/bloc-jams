@@ -14,7 +14,6 @@ var createSongRow = function(songNumber, songName, songLength) {
 
     if(currentlyPlayingSongNumber !== songNumber) {
       setSong(songNumber);
-      currentSoundFile.play();
     } else if (currentSoundFile.isPaused()) {
       $(this).html(pauseButtonTemplate);
       $('.main-controls .play-pause').html(playerBarPauseButton);
@@ -89,6 +88,7 @@ var setSong = function(songNumber) {
   });
 
   setVolume(currentVolume);
+  currentSoundFile.play();
 };
 
 var setVolume = function(volume) {
@@ -114,7 +114,6 @@ var nextSong = function() {
   }
 
   setSong(newValue);
-  currentSoundFile.play();
 };
 
 var prevSong = function() {
@@ -125,7 +124,6 @@ var prevSong = function() {
   }
 
   setSong(newValue);
-  currentSoundFile.play();
 };
 
 var updatePlayerBarSong = function() {
@@ -133,6 +131,22 @@ var updatePlayerBarSong = function() {
   $('.currently-playing .artist-name').text(currentAlbum.artist);
   $('.currently-playing .artist-song-mobile').text(currentSongFromAlbum.title + " - " + currentAlbum.artist)
   $('.main-controls .play-pause').html(playerBarPauseButton);
+};
+
+// Plays first song if no song has been played/paused yet. Otherwise, it will
+// toggle
+var togglePlayFromPlayerBar = function() {
+  if (!currentlyPlayingSongNumber) {
+    setSong(1);
+  } else if (currentSoundFile.isPaused()) {
+    currentSoundFile.play();
+    $bigPlayPause.html(playerBarPauseButton);
+    getSongNumberCell(currentlyPlayingSongNumber).html(pauseButtonTemplate);
+  } else {
+    currentSoundFile.pause();
+    $bigPlayPause.html(playerBarPlayButton);
+    getSongNumberCell(currentlyPlayingSongNumber).html(playButtonTemplate);
+  }
 };
 
 // Templates
@@ -151,9 +165,11 @@ var currentVolume = 80;
 // Elements
 var $previousButton = $('.main-controls .previous');
 var $nextButton = $('.main-controls .next');
+var $bigPlayPause = $('.main-controls .play-pause');
 
 $(document).ready(function(){
   setCurrentAlbum(albumPicasso);
   $previousButton.click(prevSong);
   $nextButton.click(nextSong);
+  $bigPlayPause.click(togglePlayFromPlayerBar);
 });
