@@ -12,15 +12,8 @@ var createSongRow = function(songNumber, songName, songLength) {
   var clickHandler = function() {
     var songNumber = $(this).attr('data-song-number');
 
-    if (currentlyPlayingSongNumber != null) {
-      $('.song-item-number[data-song-number="' + currentlyPlayingSongNumber + '"]').html(currentlyPlayingSongNumber);
-    }
-
     if(currentlyPlayingSongNumber != songNumber) {
-      $(this).html(pauseButtonTemplate);
-      currentlyPlayingSongNumber = songNumber;
-      currentSongFromAlbum = currentAlbum.songs[songNumber - 1];
-      updatePlayerBarSong();
+      setSong(songNumber);
     } else {
       $(this).html(playButtonTemplate);
       currentlyPlayingSongNumber = null;
@@ -73,48 +66,43 @@ var setCurrentAlbum = function(album) {
   }
 };
 
-// We don't need this function. It should be removed.
-var trackIndex = function(album, song) {
-  return album.songs.indexOf(song);
-};
+var setSong = function(songNumber) {
+  getSongNumberCell(currentlyPlayingSongNumber).html(currentlyPlayingSongNumber);
 
-// Note: I didn't use the trackIndex() function. It adds unnecessary complexity,
-// as we have access to the currentAlbum state here. prevSong() and nextSong()
-// will call this function to manipulate the DOM.
-var adjSong = function(oldValue) {
+  currentlyPlayingSongNumber = songNumber;
 
-  // Removes the pause button from the song that we're skipping and adds the
-  // button to the new song.
-  $('.song-item-number[data-song-number="' + oldValue + '"]').html(oldValue);
-  $('.song-item-number[data-song-number="' + currentlyPlayingSongNumber + '"]').html(pauseButtonTemplate);
-
-  // Updates currentSongFromAlbum state and then updates the bar
+  getSongNumberCell(currentlyPlayingSongNumber).html(pauseButtonTemplate);
   currentSongFromAlbum = currentAlbum.songs[currentlyPlayingSongNumber - 1];
   updatePlayerBarSong();
 };
 
-var nextSong = function() {
-  var oldValue = currentlyPlayingSongNumber;
+var getSongNumberCell = function(songNumber) {
+  return $('.song-item-number[data-song-number="' + songNumber + '"]');
+};
 
+// Unused, but part of the Checkpoint.
+var trackIndex = function(album, song) {
+  return album.songs.indexOf(song);
+};
+
+var nextSong = function() {
   if(currentlyPlayingSongNumber < currentAlbum.songs.length) {
-    currentlyPlayingSongNumber = parseInt(currentlyPlayingSongNumber) + 1;
+    var newValue = parseInt(currentlyPlayingSongNumber) + 1;
   } else {
-    currentlyPlayingSongNumber = 1;
+    var newValue = 1;
   }
 
-  adjSong(oldValue);
+  setSong(newValue);
 };
 
 var prevSong = function() {
-  var oldValue = currentlyPlayingSongNumber;
-
   if(currentlyPlayingSongNumber == 1) {
-    currentlyPlayingSongNumber = currentAlbum.songs.length;
+    var newValue = currentAlbum.songs.length;
   } else {
-    currentlyPlayingSongNumber = parseInt(currentlyPlayingSongNumber) - 1;
+    var newValue = parseInt(currentlyPlayingSongNumber) - 1;
   }
 
-  adjSong(oldValue);
+  setSong(newValue);
 };
 
 var updatePlayerBarSong = function() {
