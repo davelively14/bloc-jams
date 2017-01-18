@@ -105,6 +105,18 @@ var prevSong = function() {
   setSong(newValue);
 };
 
+var skipSong = function(value) {
+  var test = (parseInt(currentlyPlayingSongNumber) + value) % currentAlbum.songs.length;
+
+  if(test <= 0 ) {
+    var newValue = currentAlbum.songs.length;
+  } else {
+    var newValue = test;
+  }
+
+  setSong(newValue);
+}
+
 var updatePlayerBarSong = function() {
   $('.currently-playing .song-name').text(currentSongFromAlbum.title);
   $('.currently-playing .artist-name').text(currentAlbum.artist);
@@ -129,6 +141,6 @@ var $nextButton = $('.main-controls .next');
 
 $(document).ready(function(){
   setCurrentAlbum(albumPicasso);
-  $previousButton.click(prevSong);
-  $nextButton.click(nextSong);
+  $previousButton.click(function() { skipSong(-1) });
+  $nextButton.click(function() { skipSong(1) });
 });
