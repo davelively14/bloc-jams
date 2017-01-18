@@ -109,7 +109,7 @@ var skipSong = function(value) {
   var test = (parseInt(currentlyPlayingSongNumber) + value) % currentAlbum.songs.length;
 
   if(test <= 0 ) {
-    var newValue = currentAlbum.songs.length;
+    var newValue = currentAlbum.songs.length + test;
   } else {
     var newValue = test;
   }
@@ -141,6 +141,11 @@ var $nextButton = $('.main-controls .next');
 
 $(document).ready(function(){
   setCurrentAlbum(albumPicasso);
+
+  // Since I need to pass the value of songs to skip, I had to nest the function
+  // call to skipSong(var) within an anonymous function. When I just called the
+  // skipSong(value) direction, it ran the function on load, which caused song
+  // 1 to start playing.
   $previousButton.click(function() { skipSong(-1) });
   $nextButton.click(function() { skipSong(1) });
 });
