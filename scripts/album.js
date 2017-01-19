@@ -3,7 +3,7 @@ var createSongRow = function(songNumber, songName, songLength) {
   <tr class="album-view-song-item">
     <td class="song-item-number" data-song-number="` + songNumber + `">` + songNumber + `</td>
     <td class="song-item-title">` + songName + `</td>
-    <td class="song-item-duration">` + songLength + `</td>
+    <td class="song-item-duration">` + buzz.toTimer(songLength) + `</td>
   </tr>
   `;
 
@@ -76,6 +76,7 @@ var updateSeekBarWhileSongPlays = function() {
       var $seekBar = $('.seek-control .seek-bar');
 
       updateSeekPercentage($seekBar, seekBarFillRatio);
+      setCurrentTimeInPlayerBar(buzz.toTimer(currentSoundFile.getTime()));
     });
   }
 };
@@ -142,13 +143,13 @@ var setSong = function(songNumber) {
 
   getSongNumberCell(currentlyPlayingSongNumber).html(pauseButtonTemplate);
   currentSongFromAlbum = currentAlbum.songs[currentlyPlayingSongNumber - 1];
-  updatePlayerBarSong();
 
   currentSoundFile = new buzz.sound(currentSongFromAlbum.audioUrl, {
     formats: ['mp3'],
     preload: true
   });
 
+  updatePlayerBarSong();
   setVolume(currentVolume);
   currentSoundFile.play();
   updateSeekPercentage($('.volume .seek-bar'), currentVolume / 100);
@@ -201,6 +202,7 @@ var updatePlayerBarSong = function() {
   $('.currently-playing .artist-name').text(currentAlbum.artist);
   $('.currently-playing .artist-song-mobile').text(currentSongFromAlbum.title + " - " + currentAlbum.artist)
   $('.main-controls .play-pause').html(playerBarPauseButton);
+  $('.total-time').text(buzz.toTimer(currentSongFromAlbum.duration));
 };
 
 // Plays first song if no song has been played/paused yet. Otherwise, it will
@@ -218,6 +220,18 @@ var togglePlayFromPlayerBar = function() {
     getSongNumberCell(currentlyPlayingSongNumber).html(playButtonTemplate);
   }
 };
+
+var setCurrentTimeInPlayerBar = function(currentTime) {
+  $('.current-time').text(currentTime);
+};
+
+// This is an unnecessary function, as the buzz class comes with this function:
+// buzz.toTimer();
+var filterTimeCode = function(timeInSeconds) {
+  var minutes = Math.floor(timeInSeconds / 60);
+  var seconds = timeInSeconds % 60;
+  return minutes + ":" + seconds;
+}
 
 // Templates
 var playButtonTemplate = `<a class="album-song-button"><span class="ion-play"></span></a>`;
